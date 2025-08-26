@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://youtube-thumbnails-downloader.netlify.app/sitemap.xml
