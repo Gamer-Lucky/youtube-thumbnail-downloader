@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Download YouTube video thumbnails in high quality (HD, HQ, Max Resolution) instantly. Free, fast, and works on mobile & desktop.">
+    <title>YouTube Thumbnail Downloader | Free Online Tool</title>
+    <style>
+        /* --- CSS Styling Starts --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            /* Prevents default scrolling behavior */
+            overflow-x: hidden;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* --- Ad Styles --- */
+        .ad-top {
+            width: 100%;
+            height: 90px;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #aaa;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #444;
+        }
+
+        .main-layout {
+            display: flex;
+            width: 100%;
+            max-width: 1200px; /* Wider to accommodate side ads on desktop */
+            flex: 1;
+        }
+
+        .ad-left, .ad-right {
+            width: 160px;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #aaa;
+            font-size: 1rem;
+            border: 1px dashed #555;
+            margin: 10px 0;
+        }
+        .ad-left { margin-right: 10px; }
+        .ad-right { margin-left: 10px; }
+
+        /* Hide side ads on mobile by default */
+        .ad-left, .ad-right { display: none; }
+
+        @media (min-width: 900px) {
+            .ad-left, .ad-right { display: flex; }
+        }
+
+
+        .container {
+            flex: 1;
+            width: 90vw;
+            max-width: 600px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 30px 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin: 20px 0; /* Add some vertical margin */
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #videoUrl {
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+
+        #getThumbnailBtn {
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff0000;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #getThumbnailBtn:hover {
+            background-color: #cc0000;
+        }
+
+        #sizeSelectorContainer {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        #sizeSelectorLabel {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        #sizeSelector {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #2d2d2d;
+            color: white;
+            border: 1px solid #333;
+            font-size: 1rem;
+        }
+
+        #error-message {
+            color: #ff5555;
+            min-height: 1.5em;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        #results {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .thumbnail-container {
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.5s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .thumbnail-label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .thumbnail-img {
+            width: 100%;
+            max-width: 480px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .download-btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #444;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #666;
+        }
+
+        /* Ensures the last item doesn't have excessive bottom margin */
+        .thumbnail-container:last-child {
+             margin-bottom: 10px;
+        }
+
+        /* Loading indicator for download button */
+        .download-btn.loading {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+        .download-btn.loading::after {
+            content: " ...";
+            animation: dots 1s steps(5, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60%, 100% { content: "..."; }
+        }
+
+        /* --- CSS Styling Ends --- */
+    </style>
+</head>
+<body>
+    <!-- Top Ad Placeholder -->
+    <div class="ad-top">Ad Space (Top Banner - 90px)</div>
+
+    <div class="main-layout">
+        <!-- Left Ad Placeholder -->
+        <div class="ad-left">Ad Space (Left Skyscraper - 160px)</div>
+
+        <!-- Main Tool Container -->
+        <div class="container">
+            <h1>YouTube Thumbnail Downloader</h1>
+            <div class="input-group">
+                <input type="text" id="videoUrl" placeholder="Paste YouTube video URL here..." autocomplete="off">
+                <button id="getThumbnailBtn" aria-label="Get thumbnail images">Get Thumbnail</button>
+                <div id="error-message" role="alert" aria-live="polite"></div>
+            </div>
+
+            <div id="sizeSelectorContainer">
+                <label for="sizeSelector" id="sizeSelectorLabel">Select Image Size:</label>
+                <select id="sizeSelector">
+                    <option value="default.jpg">Normal Image (120x90)</option>
+                    <option value="mqdefault.jpg">Normal Image (320x180)</option>
+                    <option value="hqdefault.jpg">Normal Image (480x360)</option>
+                    <option value="sddefault.jpg">SD Image (640x480)</option>
+                    <option value="maxresdefault.jpg">HD Image (1280x720)</option>
+                </select>
+            </div>
+
+            <div id="results">
+                <!-- Thumbnails will be inserted here by JavaScript -->
+            </div>
+        </div>
+        <!-- /Main Tool Container -->
+
+        <!-- Right Ad Placeholder -->
+        <div class="ad-right">Ad Space (Right Skyscraper - 160px)</div>
+    </div>
+
+    <script>
+        // --- JavaScript Logic Starts ---
+        (function() { // IIFE to avoid polluting global scope
+
+            // --- DOM Elements ---
+            const videoUrlInput = document.getElementById('videoUrl');
+            const getThumbnailBtn = document.getElementById('getThumbnailBtn');
+            const errorMessageEl = document.getElementById('error-message');
+            const resultsContainer = document.getElementById('results');
+            const sizeSelector = document.getElementById('sizeSelector');
+
+            // --- Utility Functions ---
+            /**
+             * Extracts the YouTube video ID from various URL formats.
+             * @param {string} url - The YouTube URL.
+             * @returns {string|null} - The video ID or null if invalid.
+             */
+            function extractVideoId(url) {
+                if (!url) return null;
+                const trimmedUrl = url.trim();
+                const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                const match = trimmedUrl.match(regExp);
+                return (match && match[2].length === 11) ? match[2] : null;
+            }
+
+            /**
+             * Displays an error message to the user.
+             * @param {string} message - The error message.
+             */
+            function showError(message) {
+                errorMessageEl.textContent = message;
+                resultsContainer.style.display = 'none';
+            }
+
+            /**
+             * Clears any displayed error message.
+             */
+            function clearError() {
+                errorMessageEl.textContent = '';
+            }
+
+            /**
+             * Forces the download of an image by fetching it as a blob,
+             * creating an object URL, and triggering a download link click.
+             * This method works better for forcing downloads on all browsers, including mobile.
+             * @param {string} url - The URL of the image to download.
+             * @param {string} filename - The filename to save the image as.
+             */
+            async function downloadImage(url, filename) {
+                let buttonToRestore = null;
+                try {
+                    // Find the button that triggered this call to show loading state
+                    const allButtons = document.querySelectorAll('.download-btn');
+                    for (const btn of allButtons) {
+                        if (btn.getAttribute('data-url') === url && btn.getAttribute('data-filename') === filename) {
+                            buttonToRestore = btn;
+                            btn.classList.add('loading');
+                            btn.disabled = true;
+                            break;
+                        }
+                    }
+
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
+                    }
+                    const blob = await response.blob();
+                    const objectUrl = URL.createObjectURL(blob);
+
+                    const link = document.createElement("a");
+                    link.href = objectUrl;
+                    link.download = filename;
+                    // ARIA hidden to prevent screen readers from announcing it
+                    link.setAttribute("aria-hidden", "true");
+                    link.style.position = 'absolute';
+                    link.style.left = '-9999px';
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Clean up the object URL
+                    URL.revokeObjectURL(objectUrl);
+                } catch (error) {
+                    console.error("Download failed:", error);
+                    showError("Download failed. Please try again.");
+                } finally {
+                    // Restore button state
+                    if (buttonToRestore) {
+                        buttonToRestore.classList.remove('loading');
+                        buttonToRestore.disabled = false;
+                    }
+                }
+            }
+
+            /**
+             * Generates and displays the selected thumbnail image and download button.
+             * @param {string} videoId - The extracted YouTube video ID.
+             */
+            function displayThumbnails(videoId) {
+                clearError();
+                resultsContainer.innerHTML = ''; // Clear previous results
+
+                const selectedSize = sizeSelector.value;
+                const selectedOptionText = sizeSelector.options[sizeSelector.selectedIndex].text;
+                const imgUrl = `https://img.youtube.com/vi/${videoId}/${selectedSize}`;
+
+                const container = document.createElement('div');
+                container.className = 'thumbnail-container';
+
+                // Create a filename for the download
+                const filenameWithoutExt = `${videoId}_${selectedSize.split('.')[0]}`;
+                const fullFilename = `${filenameWithoutExt}.jpg`;
+
+                container.innerHTML = `
+                    <div class="thumbnail-label">${selectedOptionText}</div>
+                    <img src="${imgUrl}" alt="YouTube Thumbnail ${selectedOptionText}" class="thumbnail-img" loading="lazy">
+                    <button class="download-btn" data-url="${imgUrl}" data-filename="${fullFilename}" aria-label="Download ${selectedOptionText} thumbnail">
+                        Download Thumbnail
+                    </button>
+                `;
+
+                resultsContainer.appendChild(container);
+                resultsContainer.style.display = 'block';
+
+                // Add event listener to the newly created download button
+                const newDownloadBtn = container.querySelector('.download-btn');
+                newDownloadBtn.addEventListener('click', (e) => {
+                    const url = e.target.getAttribute('data-url');
+                    const filename = e.target.getAttribute('data-filename');
+                    downloadImage(url, filename);
+                });
+            }
+
+            // --- Main Event Handler ---
+            /**
+             * Handles the button click event to process the URL.
+             */
+            function handleGetThumbnail() {
+                const url = videoUrlInput.value;
+                const videoId = extractVideoId(url);
+
+                if (!videoId) {
+                    showError('Please enter a valid YouTube URL.');
+                    return;
+                }
+
+                displayThumbnails(videoId);
+            }
+
+            // --- Event Listeners ---
+            getThumbnailBtn.addEventListener('click', handleGetThumbnail);
+
+            videoUrlInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleGetThumbnail();
+                }
+            });
+
+            // Optional: Update thumbnail if size is changed after a result is shown
+            sizeSelector.addEventListener('change', () => {
+                 if (resultsContainer.style.display !== 'none' && videoUrlInput.value) {
+                     // Only re-fetch if a URL was previously entered and results are shown
+                     handleGetThumbnail();
+                 }
+            });
+
+        })();
+        // --- JavaScript Logic Ends ---
+    </script>
+</body>
+</html>
