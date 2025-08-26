@@ -3,22 +3,16 @@
 
   <!-- Homepage -->
   <url>
-    <loc>https://yourprojectname.netlify.app/</loc>
+    <loc>https://youtube-thumbnails-downloader.netlify.app/</loc>
     <lastmod>2025-08-26</lastmod>
     <priority>1.0</priority>
   </url>
 
-  <!-- Future Tools Pages (example) -->
+  <!-- Tool Page (same as homepage since file is index.html) -->
   <url>
-    <loc>https://yourprojectname.netlify.app/youtube-thumbnail-downloader.html</loc>
+    <loc>https://youtube-thumbnails-downloader.netlify.app/index.html</loc>
     <lastmod>2025-08-26</lastmod>
     <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://yourprojectname.netlify.app/age-calculator.html</loc>
-    <lastmod>2025-08-26</lastmod>
-    <priority>0.8</priority>
   </url>
 
 </urlset>
