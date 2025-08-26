@@ -4,15 +4,8 @@
   <!-- Homepage -->
   <url>
     <loc>https://youtube-thumbnails-downloader.netlify.app/</loc>
-    <lastmod>2025-08-26</lastmod>
+    <lastmod>2025-08-26T00:00:00+00:00</lastmod>
     <priority>1.0</priority>
-  </url>
-
-  <!-- Tool Page (same as homepage since file is index.html) -->
-  <url>
-    <loc>https://youtube-thumbnails-downloader.netlify.app/index.html</loc>
-    <lastmod>2025-08-26</lastmod>
-    <priority>0.9</priority>
   </url>
 
 </urlset>
